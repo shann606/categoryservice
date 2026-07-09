@@ -1,3 +1,6 @@
 spring:
   application:
     name: categoryservice
+
+server:
+  port: 8081
