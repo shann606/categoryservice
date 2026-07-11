@@ -1,3 +1,35 @@
 spring:
   application:
     name: categoryservice
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/orcl
+    username: localbank
+    password: local123
+    driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      pool-name: oracle-expense
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      keepalive-time: 300000
+      connection-timeout: 30000
+      validation-timeout: 5000
+      auto-commit: true
+
+server:
+  port: 8081
+
+logging:
+  level:
+    root: info
+    "[org.hibernate.SQL]": debug
+    "[org.hibernate.type.descriptor.sql.BasicBinder]": debug
+    "[com.exp.categoryservice]": debug
+    "[com.zaxxer.hikari]": warn
