@@ -9,8 +9,6 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -19,9 +17,11 @@ import com.exp.categoryservice.dto.CategoryReponse;
 import com.exp.categoryservice.dto.CategoryRequest;
 import com.exp.categoryservice.dto.SubCategoryRequest;
 import com.exp.categoryservice.dto.SubCategoryResponse;
+import com.exp.categoryservice.dto.ViewSubCategory;
 import com.exp.categoryservice.entity.AddtionalInfo;
 import com.exp.categoryservice.entity.Category;
 import com.exp.categoryservice.entity.SubCategory;
+import com.exp.categoryservice.exception.CategoryNotFoundException;
 import com.exp.categoryservice.mapper.CustomMapper;
 import com.exp.categoryservice.repository.CategoryRespository;
 import com.exp.categoryservice.repository.SubCategoryRepository;
@@ -70,10 +70,8 @@ public class CategoryService {
 
 	private AddtionalInfo getAddtionalInfo(String createdBy) {
 
-		AddtionalInfo info = AddtionalInfo.builder().createdby(createdBy)
+		return AddtionalInfo.builder().createdby(createdBy)
 				.createdOn(OffsetDateTime.now(Clock.systemUTC())).build();
-
-		return info;
 
 	}
 
@@ -101,10 +99,22 @@ public class CategoryService {
 		if (StringUtils.hasText(toDate)) {
 			createdT = dateConverter(toDate);
 		}
-         log.info("coming here to check");
-		return catRepo.categorySearch(name, status, createdF, createdT,
-				PageRequest.of(pageNo, 2));
+		log.info("coming here to check");
+		return catRepo.categorySearch(name, status, createdF, createdT, PageRequest.of(pageNo, 2));
 
+	}
+
+	public CategoryReponse getCategory(UUID id) {
+
+		Category cat = catRepo.findById(id)
+				.orElseThrow(() -> new CategoryNotFoundException("category not found in the system."));
+
+		return customMapper.toCatDTP(cat);
+	}
+
+	public Page<ViewSubCategory> viewSubCategories(UUID catId, int pageNo) {
+
+		return subCatRepo.viewSubCategories(catId, PageRequest.of(pageNo, 2));
 	}
 
 }

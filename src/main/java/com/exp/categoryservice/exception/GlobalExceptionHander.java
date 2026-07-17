@@ -33,4 +33,14 @@ public class GlobalExceptionHander {
 
 	}
 
+	@ExceptionHandler(value = CategoryNotFoundException.class)
+	public ResponseEntity<ExceptionResponse> categoryFoundException(CategoryNotFoundException ex) {
+		log.error(ex.getMessage());
+
+		ExceptionResponse res = new ExceptionResponse(failedStatus, ex.getMessage());
+
+		return new ResponseEntity<ExceptionResponse>(res, HttpStatus.NOT_FOUND);
+
+	}
+
 }

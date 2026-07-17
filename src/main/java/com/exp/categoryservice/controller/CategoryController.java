@@ -18,6 +18,7 @@ import com.exp.categoryservice.dto.CategoryReponse;
 import com.exp.categoryservice.dto.CategoryRequest;
 import com.exp.categoryservice.dto.SubCategoryRequest;
 import com.exp.categoryservice.dto.SubCategoryResponse;
+import com.exp.categoryservice.dto.ViewSubCategory;
 import com.exp.categoryservice.service.CategoryService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,13 @@ public class CategoryController {
 
 	}
 
+	@GetMapping("/{id}")
+	public ResponseEntity<CategoryReponse> getCategory(@PathVariable UUID id) {
+
+		return new ResponseEntity<CategoryReponse>(catService.getCategory(id), HttpStatus.ACCEPTED);
+
+	}
+
 	@GetMapping("/search")
 	public ResponseEntity<Page<CategoryReponse>> categorySearch(@RequestParam(required = false) String name,
 			@RequestParam(required = false) String status, @RequestParam(required = false) String fromdate,
@@ -61,6 +69,16 @@ public class CategoryController {
 
 		return new ResponseEntity<Page<CategoryReponse>>(
 				catService.categorySearch(name, status, fromdate, todate, pageNo), HttpStatus.OK);
+
+	}
+
+	@GetMapping("/subcategory/{catId}")
+	public ResponseEntity<Page<ViewSubCategory>> subCategories(@PathVariable UUID catId, int pageNo) {
+
+		log.info("getting category id to process associated sub cats" + catId);
+
+		return new ResponseEntity<Page<ViewSubCategory>>(catService.viewSubCategories(catId, pageNo),
+				HttpStatus.OK);
 
 	}
 
