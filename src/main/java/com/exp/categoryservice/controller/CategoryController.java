@@ -5,9 +5,11 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import com.exp.categoryservice.dto.CategoryReponse;
 import com.exp.categoryservice.dto.CategoryRequest;
 import com.exp.categoryservice.dto.SubCategoryRequest;
 import com.exp.categoryservice.dto.SubCategoryResponse;
+import com.exp.categoryservice.dto.UpdateSubCategory;
 import com.exp.categoryservice.dto.ViewSubCategory;
 import com.exp.categoryservice.service.CategoryService;
 
@@ -48,8 +51,7 @@ public class CategoryController {
 			@RequestBody SubCategoryRequest req, @RequestHeader(name = "X-Username") String createdBy) {
 		log.info("logged in user id ::" + createdBy);
 
-		return new ResponseEntity<SubCategoryResponse>(catService.createSubCategory(id, req, createdBy),
-				HttpStatus.CREATED);
+		return new ResponseEntity<SubCategoryResponse>(catService.createSubCategory(id, req, createdBy), HttpStatus.OK);
 
 	}
 
@@ -57,6 +59,21 @@ public class CategoryController {
 	public ResponseEntity<CategoryReponse> getCategory(@PathVariable UUID id) {
 
 		return new ResponseEntity<CategoryReponse>(catService.getCategory(id), HttpStatus.ACCEPTED);
+
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<CategoryReponse> updateCategory(@PathVariable UUID id, @RequestBody CategoryRequest req,
+			@RequestHeader(name = "X-Username") String updatedBy) {
+
+		return new ResponseEntity<CategoryReponse>(catService.updateCategory(id, req, updatedBy), HttpStatus.OK);
+
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Page<CategoryReponse>> deleteCategory(@PathVariable UUID id) {
+
+		return new ResponseEntity<Page<CategoryReponse>>(catService.deleteCategory(id), HttpStatus.OK);
 
 	}
 
@@ -72,12 +89,40 @@ public class CategoryController {
 
 	}
 
-	@GetMapping("/subcategory/{catId}")
-	public ResponseEntity<Page<ViewSubCategory>> subCategories(@PathVariable UUID catId, int pageNo) {
+	@GetMapping("{categoryId}/subcategories")
+	public ResponseEntity<Page<ViewSubCategory>> subCategories(@PathVariable UUID categoryId, int pageNo) {
 
-		log.info("getting category id to process associated sub cats" + catId);
+		log.info("getting category id to process associated sub cats" + categoryId);
 
-		return new ResponseEntity<Page<ViewSubCategory>>(catService.viewSubCategories(catId, pageNo),
+		return new ResponseEntity<Page<ViewSubCategory>>(catService.viewSubCategories(categoryId, pageNo),
+				HttpStatus.OK);
+
+	}
+
+	@PutMapping("/subcategories/{subcategoryId}")
+	public ResponseEntity<UpdateSubCategory> updateSubCategory(@PathVariable UUID subcategoryId,
+			@RequestBody UpdateSubCategory subCategory, @RequestHeader(name = "X-Username") String updatedBy) {
+		log.info("updating subcategory");
+
+		return new ResponseEntity<UpdateSubCategory>(
+				catService.updateSubCategory(subcategoryId, subCategory, updatedBy), HttpStatus.OK);
+
+	}
+
+	@GetMapping("/subcategories/{subcategoryId}")
+	public ResponseEntity<SubCategoryResponse> getSubCategory(@PathVariable UUID subcategoryId) {
+
+		log.info("Getting indiviual sub-category data" + subcategoryId);
+
+		return new ResponseEntity<SubCategoryResponse>(catService.getSubCategory(subcategoryId), HttpStatus.OK);
+
+	}
+
+	@DeleteMapping("/subcategories/{subCategoryId}")
+	public ResponseEntity<Page<ViewSubCategory>> deleteSubCategory(@PathVariable UUID subCategoryId,
+			@RequestParam UUID categoryId) {
+
+		return new ResponseEntity<Page<ViewSubCategory>>(catService.deleteSubCategory(categoryId, subCategoryId),
 				HttpStatus.OK);
 
 	}

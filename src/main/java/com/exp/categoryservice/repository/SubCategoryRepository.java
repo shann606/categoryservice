@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.exp.categoryservice.dto.ViewSubCategory;
@@ -28,4 +29,12 @@ public interface SubCategoryRepository extends JpaRepository<SubCategory, UUID> 
 		    ORDER BY c.info.createdOn DESC
 		    """)
 		Page<ViewSubCategory> viewSubCategories(UUID catId, Pageable pageable);
+	
+	
+	
+		@Modifying
+		@Query("""
+				delete SubCategory where catId = ?1
+				""")
+		void deleteSubCategories(UUID categoryId);
 }
