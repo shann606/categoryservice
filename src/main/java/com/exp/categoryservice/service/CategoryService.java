@@ -5,16 +5,17 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.exp.categoryservice.dto.CategoriesAndSubCategories;
 import com.exp.categoryservice.dto.CategoryReponse;
 import com.exp.categoryservice.dto.CategoryRequest;
 import com.exp.categoryservice.dto.SubCategoryRequest;
@@ -108,7 +109,7 @@ public class CategoryService {
 			createdT = dateConverter(toDate);
 		}
 		log.info("coming here to check");
-		return catRepo.categorySearch(name, status, createdF, createdT, PageRequest.of(pageNo, 3));
+		return catRepo.categorySearch(name, status, createdF, createdT, PageRequest.of(pageNo, 6));
 
 	}
 
@@ -122,7 +123,7 @@ public class CategoryService {
 
 	public Page<ViewSubCategory> viewSubCategories(UUID catId, int pageNo) {
 
-		return subCatRepo.viewSubCategories(catId, PageRequest.of(pageNo, 3));
+		return subCatRepo.viewSubCategories(catId, PageRequest.of(pageNo, 6));
 	}
 
 	@Transactional(timeout = 10)
@@ -181,9 +182,24 @@ public class CategoryService {
 	}
 
 	@Transactional
-	public Page<ViewSubCategory> deleteSubCategory(UUID categoryId,UUID subCategoryId) {
+	public Page<ViewSubCategory> deleteSubCategory(UUID categoryId, UUID subCategoryId) {
 		subCatRepo.deleteById(subCategoryId);
 		return viewSubCategories(categoryId, 0);
+	}
+
+	public List<CategoriesAndSubCategories> getCategories() {
+
+		return catRepo.findAll().stream().map(category -> {
+
+			CategoriesAndSubCategories cat = new CategoriesAndSubCategories(category.getId(), category.getName());
+
+			return cat;
+		}).toList();
+	}
+
+	public List<CategoriesAndSubCategories> getSubCategories(UUID categoryId) {
+
+		return subCatRepo.getSubCategories(categoryId);
 	}
 
 }
