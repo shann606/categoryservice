@@ -1,5 +1,6 @@
 package com.exp.categoryservice.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.exp.categoryservice.dto.CategoriesAndSubCategories;
 import com.exp.categoryservice.dto.CategoryReponse;
 import com.exp.categoryservice.dto.CategoryRequest;
 import com.exp.categoryservice.dto.SubCategoryRequest;
@@ -126,5 +128,19 @@ public class CategoryController {
 				HttpStatus.OK);
 
 	}
+	
+	@GetMapping
+	public ResponseEntity<List<CategoriesAndSubCategories>> getAllCategories(){
+		
+		return new ResponseEntity<List<CategoriesAndSubCategories>>(catService.getCategories(), HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/{categoryId}/sub-categories")
+	public ResponseEntity<List<CategoriesAndSubCategories>> getAllSubCategories(@PathVariable UUID categoryId){
+		
+		return new ResponseEntity<List<CategoriesAndSubCategories>>(catService.getSubCategories(categoryId), HttpStatus.OK);
+	}
+	
 
 }
