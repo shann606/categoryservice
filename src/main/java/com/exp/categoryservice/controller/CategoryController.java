@@ -128,19 +128,25 @@ public class CategoryController {
 				HttpStatus.OK);
 
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<List<CategoriesAndSubCategories>> getAllCategories(){
-		
+	public ResponseEntity<List<CategoriesAndSubCategories>> getAllCategories() {
+
 		return new ResponseEntity<List<CategoriesAndSubCategories>>(catService.getCategories(), HttpStatus.OK);
 	}
-	
-	
+
 	@GetMapping("/{categoryId}/sub-categories")
-	public ResponseEntity<List<CategoriesAndSubCategories>> getAllSubCategories(@PathVariable UUID categoryId){
-		
-		return new ResponseEntity<List<CategoriesAndSubCategories>>(catService.getSubCategories(categoryId), HttpStatus.OK);
+	public ResponseEntity<List<CategoriesAndSubCategories>> getAllSubCategories(@PathVariable UUID categoryId) {
+
+		return new ResponseEntity<List<CategoriesAndSubCategories>>(catService.getSubCategories(categoryId),
+				HttpStatus.OK);
 	}
-	
+
+	@GetMapping("/subcategories")
+	public ResponseEntity<List<CategoriesAndSubCategories>> getSubCategories() {
+
+		return new ResponseEntity<List<CategoriesAndSubCategories>>(catService.getSubCategories(), HttpStatus.OK);
+
+	}
 
 }

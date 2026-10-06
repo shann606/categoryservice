@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:oracle:thin:@localhost:1521/orcl
     username: localbank
-    password: local123
+    password: 
     driver-class-name: oracle.jdbc.OracleDriver
     hikari:
       pool-name: oracle-expense

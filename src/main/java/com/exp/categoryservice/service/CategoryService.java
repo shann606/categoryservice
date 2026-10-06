@@ -78,12 +78,6 @@ public class CategoryService {
 
 	}
 
-	private AddtionalInfo getAddtionalInfoUpdate(String updatedBy) {
-
-		return AddtionalInfo.builder().updatedby(updatedBy).createdOn(OffsetDateTime.now(Clock.systemUTC())).build();
-
-	}
-
 	private OffsetDateTime dateConverter(String date) {
 
 		LocalDate localDate = LocalDate.parse(date);
@@ -196,6 +190,18 @@ public class CategoryService {
 			return cat;
 		}).toList();
 	}
+	
+	public List<CategoriesAndSubCategories> getSubCategories() {
+
+		return subCatRepo.findAll().stream().map(category -> {
+
+			CategoriesAndSubCategories cat = new CategoriesAndSubCategories(category.getId(), category.getName());
+
+			return cat;
+		}).toList();
+	}
+
+	
 
 	public List<CategoriesAndSubCategories> getSubCategories(UUID categoryId) {
 
